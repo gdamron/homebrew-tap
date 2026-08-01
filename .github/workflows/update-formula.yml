@@ -1,0 +1,68 @@
+name: Update fugue formula
+
+# Bump Formula/fugue.rb to a published gdamron/fugue release and open a PR.
+#
+# Two ways in:
+#   * repository_dispatch (event type `fugue-release`) — sent automatically by
+#     the gdamron/fugue release workflow after it publishes, with
+#     client_payload.version set to the new version.
+#   * workflow_dispatch — run it by hand with the version input.
+on:
+  repository_dispatch:
+    types: [fugue-release]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version without the v prefix (e.g. 2026.7.0)"
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: version
+        run: |
+          set -euo pipefail
+          version="${{ github.event.inputs.version || github.event.client_payload.version }}"
+          version="${version#v}"
+          if [[ -z "$version" ]]; then
+            echo "::error::no version provided (inputs.version or client_payload.version)"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Update formula
+        run: bash scripts/update-formula.sh "${{ steps.version.outputs.version }}"
+
+      - name: Open PR if the formula changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- Formula/fugue.rb; then
+            echo "Formula already at v$VERSION; nothing to do."
+            exit 0
+          fi
+
+          branch="update-formula-v$VERSION"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add Formula/fugue.rb
+          git commit -m "fugue $VERSION"
+          git push --force-with-lease -u origin "$branch"
+
+          gh pr create \
+            --base main \
+            --head "$branch" \
+            --title "fugue $VERSION" \
+            --body "Automated formula bump to [\`v$VERSION\`](https://github.com/gdamron/fugue/releases/tag/v$VERSION). Version and \`fugue-tools-*\` sha256s taken from the release's SHA256SUMS.txt." \
+            || echo "PR already exists for $branch; pushed the updated commit."
