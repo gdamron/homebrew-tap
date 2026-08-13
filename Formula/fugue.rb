@@ -11,13 +11,13 @@
 class Fugue < Formula
   desc "Interactive and generative music runtime — CLI, serve, and MCP adapter"
   homepage "https://github.com/gdamron/fugue"
-  version "2026.7.0"
+  version "2026.8.0"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/gdamron/fugue/releases/download/v#{version}/fugue-tools-aarch64-apple-darwin.tar.gz"
-      sha256 "25e1774b024f7e0af8cd4a19c4d78aa836eb1bec026e5dd177cfab8c06b9a710"
+      sha256 "d041671c075df366635de98fbe3d804a9f801f852388d633ab42766073014fe5"
     end
     # Intel Macs are not yet a supported prebuilt target (mirrors install.sh).
   end
@@ -25,11 +25,11 @@ class Fugue < Formula
   on_linux do
     on_arm do
       url "https://github.com/gdamron/fugue/releases/download/v#{version}/fugue-tools-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "6ada77971498a4e757b92fe98d4a66aae6cdba32501ae8e4778b1262ad4693ef"
+      sha256 "45dea7395fc10c24480e0d9e02dd7145ad5d8105a40a437827ade264c296bac5"
     end
     on_intel do
       url "https://github.com/gdamron/fugue/releases/download/v#{version}/fugue-tools-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "6c78df6f89ad6e828d50404c88a3205abab5c0cb3922f8ed81f72cf23ca6b2ef"
+      sha256 "857f39438475b5647ea78bdfa681a33db4faf87995515f702b7a632a4f5c5a16"
     end
 
     # The Linux binaries link ALSA at runtime for audio output.
