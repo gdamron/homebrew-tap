@@ -42,6 +42,19 @@ class Fugue < Formula
     bin.install "fugue", "fugue-mcp"
   end
 
+  def post_install
+    # A daemon left running from a previous version keeps the OLD build resident
+    # in memory. `fugue-mcp` refuses to drive a daemon whose build hash differs
+    # from its own, so after an upgrade every MCP connection fails until that
+    # stale daemon is stopped. Ask it to shut down cleanly now (it persists its
+    # live session first); the next `fugue connect` or MCP client spawns a fresh
+    # daemon on this build. Best-effort and safe to run unconditionally —
+    # `fugue shutdown` exits 0 whether or not a daemon is running, and
+    # quiet_system never fails the install if a wedged daemon returns non-zero.
+    ohai "Stopping any running fugue daemon so it restarts on the new build"
+    quiet_system bin/"fugue", "shutdown"
+  end
+
   def caveats
     <<~EOS
       Fugue installed two executables:
