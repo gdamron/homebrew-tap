@@ -40,6 +40,11 @@ class Fugue < Formula
     # Both executables sit flat at the archive root; co-locating them in the
     # same bin lets `fugue-mcp` find its sibling `fugue serve` daemon.
     bin.install "fugue", "fugue-mcp"
+
+    # The license notices of every crate in those binaries, which their MIT,
+    # Apache-2.0 and other licenses require to ship with them. Releases before
+    # the archives carried the file have none to install.
+    doc.install "THIRD_PARTY_LICENSES.txt" if File.exist?("THIRD_PARTY_LICENSES.txt")
   end
 
   def post_install
