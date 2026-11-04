@@ -19,6 +19,9 @@ The macOS binaries are code-signed with a Developer ID and notarized, so they
 clear Gatekeeper with no "unidentified developer" prompt. No Rust toolchain is
 required.
 
+The license notices of the third-party code in those binaries are installed at
+`$(brew --prefix)/share/doc/fugue/THIRD_PARTY_LICENSES.txt`.
+
 ### Register the MCP server
 
 The CLI works on its own. To register the MCP server with your agent host
