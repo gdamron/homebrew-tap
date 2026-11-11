@@ -1,10 +1,10 @@
-name: Update fugue formula
+name: Update fyug formula
 
-# Bump Formula/fugue.rb to a published gdamron/fugue release and open a PR.
+# Bump Formula/fyug.rb to a published Ilusiv-media/fyug release and open a PR.
 #
 # Two ways in:
 #   * repository_dispatch (event type `fugue-release`) — sent automatically by
-#     the gdamron/fugue release workflow after it publishes, with
+#     the product's Promote Release workflow after it publishes, with
 #     client_payload.version set to the new version.
 #   * workflow_dispatch — run it by hand with the version input.
 on:
@@ -47,7 +47,7 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           set -euo pipefail
-          if git diff --quiet -- Formula/fugue.rb; then
+          if git diff --quiet -- Formula/fyug.rb; then
             echo "Formula already at v$VERSION; nothing to do."
             exit 0
           fi
@@ -56,13 +56,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$branch"
-          git add Formula/fugue.rb
-          git commit -m "fugue $VERSION"
+          git add Formula/fyug.rb
+          git commit -m "fyug $VERSION"
           git push --force-with-lease -u origin "$branch"
 
           gh pr create \
             --base main \
             --head "$branch" \
-            --title "fugue $VERSION" \
-            --body "Automated formula bump to [\`v$VERSION\`](https://github.com/gdamron/fugue/releases/tag/v$VERSION). Version and \`fugue-tools-*\` sha256s taken from the release's SHA256SUMS.txt." \
+            --title "fyug $VERSION" \
+            --body "Automated formula bump to [\`v$VERSION\`](https://github.com/Ilusiv-media/fyug/releases/tag/v$VERSION). Version and \`fyug-tools-*\` sha256s taken from the release's SHA256SUMS.txt." \
             || echo "PR already exists for $branch; pushed the updated commit."

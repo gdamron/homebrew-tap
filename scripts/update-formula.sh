@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Update Formula/fugue.rb to a published gdamron/fugue release.
+# Update Formula/fyug.rb to a published Ilusiv-media/fyug release.
 #
-# Rewrites the formula's `version` and the three `fugue-tools-*` sha256 lines
+# Rewrites the formula's `version` and the three `fyug-tools-*` sha256 lines
 # from the release's SHA256SUMS.txt. The download URLs are derived from
 # `version` in the formula, so they update automatically once `version` changes.
 #
@@ -9,20 +9,20 @@
 #   <version>  release version without the leading v (e.g. 2026.7.0)
 #
 # Environment overrides:
-#   FORMULA   path to the formula        (default: Formula/fugue.rb)
-#   REPO      GitHub repo to pull from    (default: gdamron/fugue)
+#   FORMULA   path to the formula        (default: Formula/fyug.rb)
+#   REPO      GitHub repo to pull from    (default: Ilusiv-media/fyug)
 
 set -euo pipefail
 
 VERSION="${1:?version required (e.g. 2026.7.0); usage: update-formula.sh <version>}"
 VERSION="${VERSION#v}" # tolerate a leading v
-FORMULA="${FORMULA:-Formula/fugue.rb}"
-REPO="${REPO:-gdamron/fugue}"
+FORMULA="${FORMULA:-Formula/fyug.rb}"
+REPO="${REPO:-Ilusiv-media/fyug}"
 
 [ -f "$FORMULA" ] || { echo "error: formula not found at $FORMULA" >&2; exit 1; }
 
 # The targets the formula ships, in the order their sha256 lines appear. Each
-# must have a matching `fugue-tools-<target>.tar.gz` entry in SHA256SUMS.txt.
+# must have a matching `fyug-tools-<target>.tar.gz` entry in SHA256SUMS.txt.
 TARGETS="aarch64-apple-darwin aarch64-unknown-linux-gnu x86_64-unknown-linux-gnu"
 
 TMP="$(mktemp -d)"
@@ -33,10 +33,10 @@ echo "==> Fetching $SUMS_URL"
 curl -fsSL --proto '=https' --tlsv1.2 -o "$TMP/SHA256SUMS.txt" "$SUMS_URL" \
   || { echo "error: could not fetch SHA256SUMS.txt for v${VERSION} (is the release published?)" >&2; exit 1; }
 
-# Look up the checksum for one fugue-tools target, matching on the basename so
+# Look up the checksum for one fyug-tools target, matching on the basename so
 # the leading dist/client-binaries/ path prefix is irrelevant.
 sha_for() {
-  local target="$1" asset="fugue-tools-$1.tar.gz" hash
+  local target="$1" asset="fyug-tools-$1.tar.gz" hash
   hash="$(awk -v want="$asset" '{ n = $2; sub(/.*\//, "", n); if (n == want) { print $1; exit } }' "$TMP/SHA256SUMS.txt")"
   [ -n "$hash" ] || { echo "error: no checksum for $asset in SHA256SUMS.txt" >&2; exit 1; }
   printf '%s' "$hash"
@@ -50,7 +50,7 @@ for t in $TARGETS; do
 done
 
 echo "==> Rewriting $FORMULA to v${VERSION}"
-# Update `version "..."`, then for each `url ".../fugue-tools-<target>.tar.gz"`
+# Update `version "..."`, then for each `url ".../fyug-tools-<target>.tar.gz"`
 # line, replace the following `sha256 "..."` with that target's hash.
 awk -v version="$VERSION" -v mapfile="$TMP/map.txt" '
 BEGIN {
@@ -64,9 +64,9 @@ BEGIN {
   sub(/"[^"]*"/, "\"" version "\"")
   print; next
 }
-match($0, /fugue-tools-[a-z0-9_-]+\.tar\.gz/) {
+match($0, /fyug-tools-[a-z0-9_-]+\.tar\.gz/) {
   asset = substr($0, RSTART, RLENGTH)
-  target = asset; sub(/^fugue-tools-/, "", target); sub(/\.tar\.gz$/, "", target)
+  target = asset; sub(/^fyug-tools-/, "", target); sub(/\.tar\.gz$/, "", target)
   pending = target
   print; next
 }
