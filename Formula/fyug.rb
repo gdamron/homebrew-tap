@@ -55,9 +55,8 @@ class Fyug < Formula
     # from its own, so after an upgrade every MCP connection fails until that
     # stale daemon is stopped. Ask it to shut down cleanly now (it persists its
     # live session first); the next `fyug connect` or MCP client spawns a fresh
-    # daemon on this build. Best-effort and safe to run unconditionally —
-    # `fyug shutdown` exits 0 whether or not a daemon is running, and
-    # quiet_system never fails the install if a wedged daemon returns non-zero.
+    # daemon on this build. Best-effort — `fyug shutdown` exits 0 whether or
+    # not a daemon is running, and quiet_system ignores a non-zero exit.
     ohai "Stopping any running Fugue daemon so it restarts on the new build"
     quiet_system bin/"fyug", "shutdown"
   end
@@ -67,6 +66,7 @@ class Fyug < Formula
       Fyug installed these executables:
         fyug       the CLI, including `fyug serve` (ready to use now)
         fyug-mcp   the MCP adapter for agent hosts
+        fyug-setup the setup app (macOS only)
 
       The CLI works immediately — no further setup needed.
 
