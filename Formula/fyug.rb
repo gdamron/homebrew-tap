@@ -12,13 +12,13 @@
 class Fyug < Formula
   desc "Interactive and generative music runtime — CLI, serve, and MCP adapter"
   homepage "https://github.com/Ilusiv-media/fyug"
-  version "2026.11.0"
+  version "2026.11.1"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/Ilusiv-media/fyug/releases/download/v#{version}/fyug-tools-aarch64-apple-darwin.tar.gz"
-      sha256 "8d06c1ce4aa68dba1a877911062fa28beeb606043ab0ae6d84202f07cfdfc216"
+      sha256 "25649f0c7c269dfddcd34d27e4187b14a79cf8da8b0c3815db901103f202b9b3"
     end
     # Releases publish no Intel Mac build.
   end
@@ -26,11 +26,11 @@ class Fyug < Formula
   on_linux do
     on_arm do
       url "https://github.com/Ilusiv-media/fyug/releases/download/v#{version}/fyug-tools-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "3fdff1ba8fd92098a2a9272f4f04db168935bac593a2b2951ab2f9ad1d18a5c9"
+      sha256 "8548fc23b114019b3143dab3868a62d0a51136db1b2fe1bb483164d63abd2de1"
     end
     on_intel do
       url "https://github.com/Ilusiv-media/fyug/releases/download/v#{version}/fyug-tools-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "d77490a6da569d90affd288c91f01da1c2abdfbf5d00bb2117669e2d6dd4ea16"
+      sha256 "7bed1e5b14249f1331a59077c7e48d4b11eeddeb224fe075c917d964f2aec6c4"
     end
 
     # The Linux binaries link ALSA at runtime for audio output.
